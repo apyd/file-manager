@@ -1,7 +1,7 @@
 import { normalize, join } from 'node:path'
 import { EOL, homedir } from 'node:os'
 import { chdir, exit, stdout, cwd } from 'node:process'
-import { stat } from 'node:fs/promises'
+import { readdir, stat } from 'node:fs/promises'
 import { getUsername } from './utils/index.js'
 import { COMMAND } from './constants/index.js'
 
@@ -19,24 +19,33 @@ export const getOperation = operationName => {
         } else {
           throw new Error()
         }
-      } catch {
-        stdout.write(`Operation failed${EOL}`)
+      } catch (error) {
+        stdout.write(`Operation failed: ${error}${EOL}`)
       }
     },
-    [COMMAND.LS]: async (dedicatedFolder) => {
+    [COMMAND.LS]: async() => {
       try {
         const currentPath = cwd()
-        const updatedPath = join(currentPath, dedicatedFolder)
-        const normalizedPath = normalize(updatedPath)
-        const stats = await stat(normalizedPath)
-        const isPathToDirectory = stats
-        if(isPathToDirectory) {
-          chdir(normalizedPath)
-        } else {
-          throw new Error()
-        }
-      } catch {
-        stdout.write(`Operation failed${EOL}`)
+        const dirContent = await readdir(currentPath, { withFileTypes: true })
+        const mappedDirContent = dirContent.map(item => {
+          return {
+            name: item.name,
+            type: item.isDirectory() ? 'directory' : 'file'
+          }
+        })
+        const sortedAlphabeticallyContent = mappedDirContent.sort((a, b) => a.name.localeCompare(b.name))
+        const sortedByTypeContent = sortedAlphabeticallyContent.sort((a, b) => {
+          if(a.type === 'directory' && b.type === 'file') {
+            return -1
+          }
+          if(a.type === 'file' && b.type === 'directory') {
+            return 1
+          }
+          return 0
+        })
+        console.table(sortedByTypeContent)
+      } catch (error) {
+        stdout.write(`Operation failed: ${error}${EOL}`)
       }
     },
     [COMMAND.EXIT]: () => {
