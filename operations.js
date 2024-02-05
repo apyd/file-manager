@@ -1,9 +1,11 @@
 import { normalize, join } from 'node:path'
 import { EOL, homedir, userInfo, arch, cpus, availableParallelism } from 'node:os'
-import { chdir, exit, stdout, cwd,  } from 'node:process'
+import { chdir, exit, stdout, cwd, } from 'node:process'
+import { createHash } from 'node:crypto'
 import { readdir, stat } from 'node:fs/promises'
 import { getUsername } from './utils/index.js'
 import { COMMANDS, ERROR_MESSAGES, FILE_TYPES, OS_PARAM } from './constants/index.js'
+import { createReadStream } from 'node:fs'
 
 export const getOperation = operationName => {
   return {
@@ -14,7 +16,7 @@ export const getOperation = operationName => {
         const normalizedPath = normalize(updatedPath)
         const stats = await stat(normalizedPath)
         const isPathToDirectory = stats
-        if(isPathToDirectory) {
+        if (isPathToDirectory) {
           chdir(normalizedPath)
         } else {
           throw new Error()
@@ -23,7 +25,7 @@ export const getOperation = operationName => {
         stdout.write(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}${EOL}`)
       }
     },
-    [COMMANDS.ls]: async() => {
+    [COMMANDS.ls]: async () => {
       try {
         const currentPath = cwd()
         const dirContent = await readdir(currentPath, { withFileTypes: true })
@@ -35,10 +37,10 @@ export const getOperation = operationName => {
         })
         const sortedAlphabeticallyContent = mappedDirContent.sort((a, b) => a.name.localeCompare(b.name))
         const sortedByTypeContent = sortedAlphabeticallyContent.sort((a, b) => {
-          if(a.type === FILE_TYPES.DIRECTORY && b.type === FILE_TYPES.FILE) {
+          if (a.type === FILE_TYPES.DIRECTORY && b.type === FILE_TYPES.FILE) {
             return -1
           }
-          if(a.type === FILE_TYPES.FILE && b.type === FILE_TYPES.DIRECTORY) {
+          if (a.type === FILE_TYPES.FILE && b.type === FILE_TYPES.DIRECTORY) {
             return 1
           }
           return 0
@@ -57,7 +59,7 @@ export const getOperation = operationName => {
       const currentPath = cwd()
       const homeDir = homedir()
 
-      if(currentPath !== homeDir) {
+      if (currentPath !== homeDir) {
         chdir('..')
         return
       } else {
@@ -87,13 +89,31 @@ export const getOperation = operationName => {
           dataToPrint = userInfo().username
           break
         case OS_PARAM.ARCHITECTURE:
-            dataToPrint = arch()
-            break
+          dataToPrint = arch()
+          break
         default:
           dataToPrint = ERROR_MESSAGES.OPERATION_FAILED
       }
       console.log(dataToPrint)
     },
+    [COMMANDS.hash]: (pathToFile) => {
+      try {
+        const readFileStream = createReadStream(pathToFile)
+        const hash = createHash('sha256')
+        readFileStream.on('data', (chunk) => {
+          hash.update(chunk)
+        });
+        readFileStream.on('end', () => {
+          console.log('Hash:', hash.digest('hex'))
+        })
+        readFileStream.on('error', (error) => {
+          throw new Error(error)
+        })
+      } catch (error) {
+        console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}`)
+      }
+    },
+
 
   }[operationName] || process.stdout.write(`${ERROR_MESSAGES.INVALID_INPUT}${EOL}`)
 }
