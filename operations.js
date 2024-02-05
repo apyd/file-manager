@@ -5,7 +5,8 @@ import { createHash } from 'node:crypto'
 import { readdir, stat } from 'node:fs/promises'
 import { getUsername } from './utils/index.js'
 import { COMMANDS, ERROR_MESSAGES, FILE_TYPES, OS_PARAM } from './constants/index.js'
-import { createReadStream } from 'node:fs'
+import { createReadStream, createWriteStream } from 'node:fs'
+import { createBrotliCompress, createBrotliDecompress } from 'node:zlib'
 
 export const getOperation = operationName => {
   return {
@@ -113,7 +114,19 @@ export const getOperation = operationName => {
         console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}`)
       }
     },
-
-
+    [COMMANDS.compress]: (pathToInputFile, pathToOutputFile) => {
+      const readStream = createReadStream(pathToInputFile);
+      const writeStream = createWriteStream(pathToOutputFile);
+      const brotliStream = createBrotliCompress();
+    
+      readStream.pipe(brotliStream).pipe(writeStream);
+    },
+    [COMMANDS.decompress]: (pathToInputFile, pathToOutputFile) => {
+      const readStream = createReadStream(pathToInputFile);
+      const writeStream = createWriteStream(pathToOutputFile);
+      const brotliStream = createBrotliDecompress();
+    
+      readStream.pipe(brotliStream).pipe(writeStream);
+    }
   }[operationName] || process.stdout.write(`${ERROR_MESSAGES.INVALID_INPUT}${EOL}`)
 }
