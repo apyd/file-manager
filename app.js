@@ -1,6 +1,6 @@
 import { EOL, homedir } from 'node:os';
 import { chdir, stdin, stdout } from 'node:process';
-import { COMMAND } from './constants/index.js';
+import { COMMANDS, ERROR_MESSAGES } from './constants/index.js';
 import { getOperation } from './operations.js';
 import { showCurrentPath, showWelcomeMessage } from './utils/index.js';
 
@@ -21,8 +21,8 @@ stdin.on('data', async(data) => {
 })
 
 stdin.on('error', error => {
-  stdout.write(`Operation failed: ${error.message}${EOL}`)
+  stdout.write(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error.message}${EOL}`)
 })
 
-process.on('SIGINT', getOperation(COMMAND.EXIT))
+process.on('SIGINT', getOperation(COMMANDS['.exit']))
 
