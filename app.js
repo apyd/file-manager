@@ -14,7 +14,7 @@ stdin.on('data', async(data) => {
   const [operationName, ...args] = transformedData
   const operation = getOperation?.(operationName)
 
-  operation && operation(...args)
+  operation && await operation(...args)
   !operation && stdout.write(`${ERROR_MESSAGES.INVALID_INPUT}${EOL}`)
 
   showCurrentPath()

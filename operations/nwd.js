@@ -1,16 +1,16 @@
 import { cwd, chdir, stdout } from 'node:process'
 import { readdir, stat } from 'node:fs/promises'
-import { homedir, EOL } from 'node:os'
-import { join, normalize } from 'node:path'
+import { EOL } from 'node:os'
+import { join, normalize, parse } from 'node:path'
 import { ERROR_MESSAGES, FILE_TYPES } from '../constants/index.js'
 
-export const cd = async (dedicatedFolder) => {
+export const cd = async (goToPath) => {
   try {
     const currentPath = cwd()
-    const updatedPath = join(currentPath, dedicatedFolder)
+    const updatedPath = join(currentPath, goToPath)
     const normalizedPath = normalize(updatedPath)
     const stats = await stat(normalizedPath)
-    const isPathToDirectory = stats
+    const isPathToDirectory = stats.isDirectory()
     if (isPathToDirectory) {
       chdir(normalizedPath)
     } else {
@@ -49,9 +49,9 @@ export const ls =  async () => {
 
 export const up = () => {
   const currentPath = cwd()
-  const homeDir = homedir()
+  const rootDirectory = parse(process.cwd()).root;
 
-  if (currentPath !== homeDir) {
+  if (currentPath !== rootDirectory) {
     chdir('..')
     return
   } else {

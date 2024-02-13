@@ -1,7 +1,10 @@
 import { COMMANDS } from "./constants/index.js"
 import { up, ls, cd } from "./operations/nwd.js"
-import { cat, add, rn, cp, mv, rm } from "./operations/file.js"
-import { exit } from "./operations/exit.js"
+import { cat, add, rn, cp, mv, rm } from "./operations/fs.js"
+import { hash } from "./operations/hash.js"
+import { os } from "./operations/os.js"
+import { compress, decompress } from "./operations/compress.js"
+import { quit } from "./operations/exit.js"
 
 export const getOperation = (operationName) => {
   return {
@@ -14,10 +17,10 @@ export const getOperation = (operationName) => {
     [COMMANDS.cp]: cp,
     [COMMANDS.mv]: mv,
     [COMMANDS.rm]: rm,
-    [COMMANDS.exit]: exit,
     [COMMANDS.os]: os,
     [COMMANDS.hash]: hash,
     [COMMANDS.compress]: compress,
-    [COMMANDS.decompress]: decompress
+    [COMMANDS.decompress]: decompress,
+    [COMMANDS['.exit']]: quit
   }[operationName]
 }
