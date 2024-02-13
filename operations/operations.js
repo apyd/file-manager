@@ -1,10 +1,10 @@
-import { COMMANDS } from "./constants/index.js"
-import { up, ls, cd } from "./operations/nwd.js"
-import { cat, add, rn, cp, mv, rm } from "./operations/fs.js"
-import { hash } from "./operations/hash.js"
-import { os } from "./operations/os.js"
-import { compress, decompress } from "./operations/compress.js"
-import { quit } from "./operations/exit.js"
+import { COMMANDS } from "../constants/index.js"
+import { up, ls, cd } from "./nwd.js"
+import { cat, add, rn, cp, mv, rm } from "./fs.js"
+import { hash } from "./hash.js"
+import { os } from "./os.js"
+import { compress, decompress } from "./compress.js"
+import { quit } from "./exit.js"
 
 export const getOperation = (operationName) => {
   return {
