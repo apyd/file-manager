@@ -1,5 +1,4 @@
-import { stdout, argv, cwd } from 'node:process'
-import { EOL } from 'node:os'
+import { argv, cwd } from 'node:process'
 
 export const getUsername = () => {
   const args = argv.slice(2)
@@ -9,10 +8,10 @@ export const getUsername = () => {
 
 export const showWelcomeMessage = () => {
   const username = getUsername()
-  stdout.write(`Welcome to the File Manager, ${username}!${EOL}`)
+  console.log(`Welcome to the File Manager, ${username}!`)
 }
 
 export const showCurrentPath = () => {
   const currentPath = cwd()
-  stdout.write(`You are currently in ${currentPath}${EOL}${EOL}`)
+  console.log(`You are currently in ${currentPath}`)
 }

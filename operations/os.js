@@ -30,5 +30,5 @@ export const os = (param) => {
     default:
       dataToPrint = `${ERROR_MESSAGES.OPERATION_FAILED}. Invalid parameter: ${param}. Use one of available: ${Object.values(OS_PARAM)}${EOL}`
   }
-  console.log(dataToPrint, EOL)
+  console.log(dataToPrint)
 }

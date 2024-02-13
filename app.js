@@ -1,5 +1,5 @@
 import { EOL, homedir } from 'node:os';
-import { chdir, stdin, stdout } from 'node:process';
+import { chdir, stdin } from 'node:process';
 import { ERROR_MESSAGES } from './constants/index.js';
 import { getOperation } from './operations.js';
 import { quit } from './operations/exit.js';
@@ -15,13 +15,13 @@ stdin.on('data', async(data) => {
   const operation = getOperation?.(operationName)
 
   operation && await operation(...args)
-  !operation && stdout.write(`${ERROR_MESSAGES.INVALID_INPUT}${EOL}`)
+  !operation && console.log(`${ERROR_MESSAGES.INVALID_INPUT}`)
 
   showCurrentPath()
 })
 
 stdin.on('error', error => {
-  stdout.write(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error.message}${EOL}`)
+  console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error.message}${EOL}`)
 })
 
 process.on('SIGINT', quit)

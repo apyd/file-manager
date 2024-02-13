@@ -1,6 +1,5 @@
-import { cwd, chdir, stdout } from 'node:process'
+import { cwd, chdir } from 'node:process'
 import { readdir, stat } from 'node:fs/promises'
-import { EOL } from 'node:os'
 import { join, normalize, parse, isAbsolute } from 'node:path'
 import { ERROR_MESSAGES, FILE_TYPES } from '../constants/index.js'
 
@@ -17,7 +16,7 @@ export const cd = async (goToPath) => {
       throw new Error()
     }
   } catch (error) {
-    stdout.write(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}${EOL}`)
+    console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}`)
   }
 }
 
@@ -43,7 +42,7 @@ export const ls =  async () => {
     })
     console.table(sortedByTypeContent)
   } catch (error) {
-    stdout.write(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}${EOL}`)
+    console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error}`)
   }
 }
 
@@ -55,6 +54,6 @@ export const up = () => {
     chdir('..')
     return
   } else {
-    process.stdout.write(`You are already in the home directory.${EOL}`)
+    console.log(`You are already in the home directory.`)
   }
 }
