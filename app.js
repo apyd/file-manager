@@ -1,7 +1,8 @@
 import { EOL, homedir } from 'node:os';
 import { chdir, stdin, stdout } from 'node:process';
-import { COMMANDS, ERROR_MESSAGES } from './constants/index.js';
+import { ERROR_MESSAGES } from './constants/index.js';
 import { getOperation } from './operations.js';
+import { quit } from './operations/exit.js';
 import { showCurrentPath, showWelcomeMessage } from './utils/index.js';
 
 chdir(homedir())
@@ -13,9 +14,8 @@ stdin.on('data', async(data) => {
   const [operationName, ...args] = transformedData
   const operation = getOperation?.(operationName)
 
-  if(typeof operation === 'function') {
-    await operation(...args)
-  }
+  operation && operation(...args)
+  !operation && stdout.write(`${ERROR_MESSAGES.INVALID_INPUT}${EOL}`)
 
   showCurrentPath()
 })
@@ -24,5 +24,4 @@ stdin.on('error', error => {
   stdout.write(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error.message}${EOL}`)
 })
 
-process.on('SIGINT', getOperation(COMMANDS['.exit']))
-
+process.on('SIGINT', quit)
