@@ -50,11 +50,11 @@ export const OS_PARAM = {
 }
 
 export const FILE_TYPES = {
-  'DIRECTORY': 'directory',
-  'FILE': 'file'
+  DIRECTORY: 'directory',
+  FILE: 'file'
 }
 
 export const ERROR_MESSAGES = {
-  'OPERATION_FAILED': 'Operation failed',
-  'INVALID_INPUT ': 'Invalid input'
+  OPERATION_FAILED: 'Operation failed',
+  INVALID_INPUT: 'Invalid input'
 }
