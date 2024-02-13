@@ -1,10 +1,12 @@
-import { EOL, cpus, userInfo, homedir, arch } from 'node:os'
+import { EOL, cpus, userInfo, homedir, arch, availableParallelism } from 'node:os'
+import { OS_PARAM } from '../constants/index.js'
+import { ERROR_MESSAGES } from '../constants/index.js'
 
 export const os = (param) => {
   let dataToPrint = ''
   switch (param) {
     case OS_PARAM.EOL:
-      dataToPrint = `End of line: ${EOL}`
+      dataToPrint = `End of line: ${JSON.stringify(EOL)}`
       break
     case OS_PARAM.CPUS:
       let summary = ''
@@ -17,16 +19,16 @@ export const os = (param) => {
       dataToPrint = summary
       break
     case OS_PARAM.HOMEDIR:
-      dataToPrint = homedir()
+      dataToPrint = `Home directory: ${homedir()}`
       break
     case OS_PARAM.USERNAME:
-      dataToPrint = userInfo().username
+      dataToPrint = `Current system user name: ${userInfo().username}`
       break
     case OS_PARAM.ARCHITECTURE:
-      dataToPrint = arch()
+      dataToPrint = `CPU architecture: ${arch()}`
       break
     default:
-      dataToPrint = ERROR_MESSAGES.OPERATION_FAILED
+      dataToPrint = `${ERROR_MESSAGES.OPERATION_FAILED}. Invalid parameter: ${param}. Use one of available: ${Object.values(OS_PARAM)}${EOL}`
   }
-  console.log(dataToPrint)
+  console.log(dataToPrint, EOL)
 }
