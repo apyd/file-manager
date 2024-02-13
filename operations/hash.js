@@ -1,16 +1,19 @@
 import { createReadStream } from 'node:fs'
 import { createHash } from 'node:crypto'
+import { cwd } from 'node:process'
 import { ERROR_MESSAGES } from '../constants/index.js'
 
-export const hash = pathToFile => {
+export const hash = filePath => {
   try {
-    const readFileStream = createReadStream(pathToFile)
+    const currentPath = cwd()
+    const updatedPath = isAbsolute(filePath) ? filePath : join(currentPath, filePath)
+    const readFileStream = createReadStream(updatedPath)
     const hash = createHash('sha256')
     readFileStream.on('data', (chunk) => {
       hash.update(chunk)
     });
     readFileStream.on('end', () => {
-      console.log('Hash:', hash.digest('hex'))
+      console.log('Operation performed successfully. File hash:', hash.digest('hex'))
     })
     readFileStream.on('error', (error) => {
       throw new Error(error)

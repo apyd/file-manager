@@ -1,4 +1,4 @@
-import { EOL, homedir } from 'node:os';
+import { homedir } from 'node:os';
 import { chdir, stdin } from 'node:process';
 import { ERROR_MESSAGES } from './constants/index.js';
 import { getOperation } from './operations.js';
@@ -21,7 +21,7 @@ stdin.on('data', async(data) => {
 })
 
 stdin.on('error', error => {
-  console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error.message}${EOL}`)
+  console.log(`${ERROR_MESSAGES.OPERATION_FAILED}: ${error.message}`)
 })
 
 process.on('SIGINT', quit)

@@ -1,12 +1,16 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createBrotliCompress, createBrotliDecompress } from 'node:zlib';
-import { normalize } from 'node:path';
+import { normalize, isAbsolute, join } from 'node:path';
+import { cwd } from 'node:process';
 import { ERROR_MESSAGES } from '../constants/index.js';
 
 export const compress = (pathToInputFile, pathToOutputFile) => {
   try {
-    const normalizedInputPath = normalize(pathToInputFile);
-    const normalizedOutputPath = normalize(pathToOutputFile);
+    const currentPath = cwd()
+    const inputFilePath = isAbsolute(pathToInputFile) ? pathToInputFile : join(currentPath, pathToInputFile)
+    const normalizedInputPath = normalize(inputFilePath)
+    const outputFilePath = isAbsolute(pathToOutputFile) ? pathToOutputFile : join(currentPath, pathToOutputFile)
+    const normalizedOutputPath = normalize(outputFilePath);
     const readStream = createReadStream(normalizedInputPath);
     const writeStream = createWriteStream(normalizedOutputPath);
     const brotliStream = createBrotliCompress();
@@ -20,7 +24,7 @@ export const compress = (pathToInputFile, pathToOutputFile) => {
     });
   
     readStream.pipe(brotliStream).pipe(writeStream).on('finish', () => {
-      console.log('File compressed successfully');
+      console.log(`File compressed successfully under: ${normalizedOutputPath}`);
     });
   }
   catch (error) {
@@ -29,8 +33,11 @@ export const compress = (pathToInputFile, pathToOutputFile) => {
 }
 export const decompress = (pathToInputFile, pathToOutputFile) => {
   try {
-    const normalizedInputPath = normalize(pathToInputFile);
-    const normalizedOutputPath = normalize(pathToOutputFile);
+    const currentPath = cwd()
+    const inputFilePath = isAbsolute(pathToInputFile) ? pathToInputFile : join(currentPath, pathToInputFile)
+    const normalizedInputPath = normalize(inputFilePath)
+    const outputFilePath = isAbsolute(pathToOutputFile) ? pathToOutputFile : join(currentPath, pathToOutputFile)
+    const normalizedOutputPath = normalize(outputFilePath);
     const readStream = createReadStream(normalizedInputPath);
     const writeStream = createWriteStream(normalizedOutputPath);
     const brotliStream = createBrotliDecompress();
@@ -44,7 +51,7 @@ export const decompress = (pathToInputFile, pathToOutputFile) => {
     });
   
     readStream.pipe(brotliStream).pipe(writeStream).on('finish', () => {
-      console.log('File decompressed successfully');
+      console.log(`File compressed successfully under: ${normalizedOutputPath}`);
     });
   }
   catch (error) {
