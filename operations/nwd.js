@@ -1,13 +1,13 @@
 import { cwd, chdir, stdout } from 'node:process'
 import { readdir, stat } from 'node:fs/promises'
 import { EOL } from 'node:os'
-import { join, normalize, parse } from 'node:path'
+import { join, normalize, parse, isAbsolute } from 'node:path'
 import { ERROR_MESSAGES, FILE_TYPES } from '../constants/index.js'
 
 export const cd = async (goToPath) => {
   try {
     const currentPath = cwd()
-    const updatedPath = join(currentPath, goToPath)
+    const updatedPath = isAbsolute(goToPath) ? goToPath : join(currentPath, goToPath)
     const normalizedPath = normalize(updatedPath)
     const stats = await stat(normalizedPath)
     const isPathToDirectory = stats.isDirectory()
@@ -55,6 +55,6 @@ export const up = () => {
     chdir('..')
     return
   } else {
-    process.stdout.write(`You are already in the home directory${EOL}`)
+    process.stdout.write(`You are already in the home directory.${EOL}`)
   }
 }
