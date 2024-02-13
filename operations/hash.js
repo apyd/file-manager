@@ -2,7 +2,7 @@ import { createReadStream } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { ERROR_MESSAGES } from '../constants/index.js'
 
-export const hash = (pathToFile) => {
+export const hash = pathToFile => {
   try {
     const readFileStream = createReadStream(pathToFile)
     const hash = createHash('sha256')
