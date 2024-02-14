@@ -1,8 +1,8 @@
 import { cwd, chdir } from 'node:process'
 import { readdir, stat } from 'node:fs/promises'
 import { parse } from 'node:path'
-import { ERROR_MESSAGES, FILE_TYPES } from '../constants/index.js'
 import { getCorrectPath } from '../utils/index.js'
+import { ERROR_MESSAGES, FILE_TYPES } from '../constants/index.js'
 
 export const cd = async (goToPath) => {
   const normalizedPath = getCorrectPath(goToPath)

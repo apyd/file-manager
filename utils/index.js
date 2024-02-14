@@ -21,3 +21,7 @@ export const getCorrectPath = path => {
   const currentPath = cwd()
   return normalize(isAbsolute(path) ? path : join(currentPath, path))
 }
+
+export const getListOfAvailableCommands = commands => {
+  return Object.keys(commands).join(', ')
+}

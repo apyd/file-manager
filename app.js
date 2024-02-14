@@ -1,9 +1,9 @@
 import { homedir } from 'node:os';
 import { chdir, stdin } from 'node:process';
-import { ERROR_MESSAGES } from './constants/index.js';
+import { COMMANDS, ERROR_MESSAGES } from './constants/index.js';
 import { getOperation } from './operations/operations.js';
 import { quit } from './operations/exit.js';
-import { showCurrentPath, showWelcomeMessage } from './utils/index.js';
+import { getListOfAvailableCommands, showCurrentPath, showWelcomeMessage } from './utils/index.js';
 
 chdir(homedir())
 showWelcomeMessage()
@@ -15,7 +15,7 @@ stdin.on('data', async(data) => {
   const operation = getOperation?.(operationName)
 
   operation && await operation(...args)
-  !operation && console.log(`${ERROR_MESSAGES.INVALID_INPUT}`)
+  !operation && console.log(`${ERROR_MESSAGES.INVALID_INPUT}. Available commands: ${getListOfAvailableCommands(COMMANDS)}`)
 
   showCurrentPath()
 })

@@ -1,6 +1,7 @@
 import { join, dirname } from 'node:path'
 import { createReadStream, createWriteStream } from 'node:fs'
 import { rm as remove } from 'node:fs/promises'
+import { getCorrectPath } from '../utils/index.js'
 import { ERROR_MESSAGES } from '../constants/index.js'
 
 export const cat = pathToFile => {
