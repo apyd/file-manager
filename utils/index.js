@@ -19,9 +19,10 @@ export const showCurrentPath = () => {
 
 export const getCorrectPath = path => {
   const currentPath = cwd()
+  if(!path) return ''
   return normalize(isAbsolute(path) ? path : join(currentPath, path))
 }
 
-export const getListOfAvailableCommands = commands => {
-  return Object.keys(commands).join(', ')
+export const getListOfKeys = obj => {
+  return Object.keys(obj).join(', ')
 }
