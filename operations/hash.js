@@ -7,15 +7,15 @@ export const hash = filePath => {
   const normalizedFilePath = getCorrectPath(filePath)
   
   try {
-    const readFileStream = createReadStream(normalizedFilePath)
+    const readStream = createReadStream(normalizedFilePath, { flags: 'r' })
     const hash = createHash('sha256')
-    readFileStream.on('data', (chunk) => {
+    readStream.on('data', (chunk) => {
       hash.update(chunk)
     });
-    readFileStream.on('end', () => {
-      console.log('Operation performed successfully. File hash:', hash.digest('hex'))
+    readStream.on('end', () => {
+      console.log('File hash:', hash.digest('hex'))
     })
-    readFileStream.on('error', (error) => {
+    readStream.on('error', (error) => {
       throw new Error(error)
     })
   } catch (error) {

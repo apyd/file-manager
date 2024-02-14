@@ -8,8 +8,8 @@ export const compress = (pathToInputFile, pathToOutputFile) => {
   const normalizedOutputPath = getCorrectPath(pathToOutputFile);
 
   try {
-    const readStream = createReadStream(normalizedInputPath);
-    const writeStream = createWriteStream(normalizedOutputPath);
+    const readStream = createReadStream(normalizedInputPath, { flags: 'r' });
+    const writeStream = createWriteStream(normalizedOutputPath, { flags: 'wx' });
     const brotliStream = createBrotliCompress();
 
     readStream.on('error', (error) => {
@@ -33,8 +33,8 @@ export const decompress = (pathToInputFile, pathToOutputFile) => {
   const normalizedOutputPath = getCorrectPath(pathToOutputFile);
 
   try {
-    const readStream = createReadStream(normalizedInputPath);
-    const writeStream = createWriteStream(normalizedOutputPath);
+    const readStream = createReadStream(normalizedInputPath, { flags: 'r' });
+    const writeStream = createWriteStream(normalizedOutputPath, { flags: 'wx' });
     const brotliStream = createBrotliDecompress();
 
     readStream.on('error', (error) => {
