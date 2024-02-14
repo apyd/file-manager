@@ -1,13 +1,13 @@
 import { cwd, chdir } from 'node:process'
 import { readdir, stat } from 'node:fs/promises'
-import { join, normalize, parse, isAbsolute } from 'node:path'
+import { parse } from 'node:path'
 import { ERROR_MESSAGES, FILE_TYPES } from '../constants/index.js'
+import { getCorrectPath } from '../utils/index.js'
 
 export const cd = async (goToPath) => {
+  const normalizedPath = getCorrectPath(goToPath)
+  
   try {
-    const currentPath = cwd()
-    const updatedPath = isAbsolute(goToPath) ? goToPath : join(currentPath, goToPath)
-    const normalizedPath = normalize(updatedPath)
     const stats = await stat(normalizedPath)
     const isPathToDirectory = stats.isDirectory()
     if (isPathToDirectory) {

@@ -1,16 +1,13 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createBrotliCompress, createBrotliDecompress } from 'node:zlib';
-import { normalize, isAbsolute, join } from 'node:path';
-import { cwd } from 'node:process';
 import { ERROR_MESSAGES } from '../constants/index.js';
+import { getCorrectPath } from '../utils/index.js';
 
 export const compress = (pathToInputFile, pathToOutputFile) => {
+  const normalizedInputPath = getCorrectPath(pathToInputFile);
+  const normalizedOutputPath = getCorrectPath(pathToOutputFile);
+
   try {
-    const currentPath = cwd()
-    const inputFilePath = isAbsolute(pathToInputFile) ? pathToInputFile : join(currentPath, pathToInputFile)
-    const normalizedInputPath = normalize(inputFilePath)
-    const outputFilePath = isAbsolute(pathToOutputFile) ? pathToOutputFile : join(currentPath, pathToOutputFile)
-    const normalizedOutputPath = normalize(outputFilePath);
     const readStream = createReadStream(normalizedInputPath);
     const writeStream = createWriteStream(normalizedOutputPath);
     const brotliStream = createBrotliCompress();
@@ -32,12 +29,10 @@ export const compress = (pathToInputFile, pathToOutputFile) => {
   }
 }
 export const decompress = (pathToInputFile, pathToOutputFile) => {
+  const normalizedInputPath = getCorrectPath(pathToInputFile);
+  const normalizedOutputPath = getCorrectPath(pathToOutputFile);
+
   try {
-    const currentPath = cwd()
-    const inputFilePath = isAbsolute(pathToInputFile) ? pathToInputFile : join(currentPath, pathToInputFile)
-    const normalizedInputPath = normalize(inputFilePath)
-    const outputFilePath = isAbsolute(pathToOutputFile) ? pathToOutputFile : join(currentPath, pathToOutputFile)
-    const normalizedOutputPath = normalize(outputFilePath);
     const readStream = createReadStream(normalizedInputPath);
     const writeStream = createWriteStream(normalizedOutputPath);
     const brotliStream = createBrotliDecompress();

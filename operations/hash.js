@@ -1,13 +1,13 @@
 import { createReadStream } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { cwd } from 'node:process'
 import { ERROR_MESSAGES } from '../constants/index.js'
+import { getCorrectPath } from '../utils/index.js'
 
 export const hash = filePath => {
+  const normalizedFilePath = getCorrectPath(filePath)
+  
   try {
-    const currentPath = cwd()
-    const updatedPath = isAbsolute(filePath) ? filePath : join(currentPath, filePath)
-    const readFileStream = createReadStream(updatedPath)
+    const readFileStream = createReadStream(normalizedFilePath)
     const hash = createHash('sha256')
     readFileStream.on('data', (chunk) => {
       hash.update(chunk)

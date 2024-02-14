@@ -1,7 +1,8 @@
 import { homedir } from 'node:os';
 import { chdir, stdin } from 'node:process';
 import { ERROR_MESSAGES } from './constants/index.js';
-import { getOperation, quit } from './operations/operations.js';
+import { getOperation } from './operations/operations.js';
+import { quit } from './operations/exit.js';
 import { showCurrentPath, showWelcomeMessage } from './utils/index.js';
 
 chdir(homedir())
